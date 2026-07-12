@@ -1,8 +1,62 @@
 <!DOCTYPE html>
-<html>
-<head><title>Zenith Live Test</title></head>
-<body style="background:#111; color:#00ff00; text-align:center; padding-top:50px; font-family:monospace;">
-    <h1>📡 ZENITH CLOUD LIVE PAGE</h1>
-    <p>Agar ye dikh raha hai, to GitHub Pages bilkul sahi kaam kar raha hai!</p>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith Live Portal</title>
+</head>
+<body style="background: #0d1117; color: #c9d1d9; font-family: monospace; padding: 40px 20px;">
+
+    <div style="text-align: center; margin-bottom: 40px;">
+        <h1 style="color: #3fb950; margin-bottom: 5px;">📡 ZENITH LIVE HOME PORTAL</h1>
+        <p style="color: #8b949e; margin-top: 0;">Connected to Cloud Engine • Real-time Stream</p>
+    </div>
+
+    <div style="max-width: 600px; margin: 0 auto;">
+        <h3 style="border-bottom: 1px solid #30363d; padding-bottom: 10px; color: #58a6ff;">📌 RECENT BROADCASTS</h3>
+        <div id="news-container">
+            <div style="color: #e3b341; padding: 20px; text-align: center;">Fetching secure cloud feed...</div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchLiveFeeds() {
+            const container = document.getElementById('news-container');
+            try {
+                // Cache issues se bachne ke liye unique timestamp inject kiya hai
+                const response = await fetch('database.json?nocache=' + new Date().getTime());
+                if(!response.ok) throw new Error();
+                
+                const data = await response.json();
+                container.innerHTML = ""; // Clear loader
+                
+                if (data.news && data.news.length > 0) {
+                    data.news.forEach(item => {
+                        const block = document.createElement('div');
+                        block.style.background = "#161b22";
+                        block.style.border = "1px solid #30363d";
+                        block.style.padding = "15px";
+                        block.style.marginBottom = "12px";
+                        block.style.borderRadius = "6px";
+                        block.style.lineHeight = "1.6";
+                        block.style.fontSize = "15px";
+                        block.style.color = "#f0f6fc";
+                        
+                        block.innerHTML = `<span style="color:#3fb950; font-weight:bold; margin-right:8px;">⚡</span> ${item.title}`;
+                        container.appendChild(block);
+                    });
+                } else {
+                    container.innerHTML = `<div style="text-align:center; color:#8b949e; padding:20px;">No feeds active on cloud database.</div>`;
+                }
+            } catch (error) {
+                container.innerHTML = `<div style="text-align:center; color:#f85149; padding:20px;">❌ Connection lost or sync pending. Reloading...</div>`;
+            }
+        }
+
+        // Run instantly
+        fetchLiveFeeds();
+        // Auto refresh every 15 seconds to catch live changes
+        setInterval(fetchLiveFeeds, 15000);
+    </script>
 </body>
 </html>
