@@ -9,7 +9,7 @@
 
     <div style="text-align: center; margin-bottom: 40px;">
         <h1 style="color: #3fb950; margin-bottom: 5px;">📡 ZENITH LIVE HOME PORTAL</h1>
-        <p style="color: #8b949e; margin-top: 0;">Connected to Cloud Engine • Media Stream Enabled</p>
+        <p style="color: #8b949e; margin-top: 0;">Multi-Media Cloud Network Active (Text • Photo • Video)</p>
     </div>
 
     <div style="max-width: 600px; margin: 0 auto;">
@@ -41,9 +41,23 @@
 
                         let rawData = item.title;
                         
-                        // Check karein kya isme image divider "|||" mojud hai?
-                        if(rawData.includes("|||")) {
-                            let parts = rawData.split("|||");
+                        // Check karein kya Video ya Photo ka naya structure hai
+                        if(rawData.includes("|||VIDEO|||")) {
+                            let parts = rawData.split("|||VIDEO|||");
+                            let textCaption = parts[0];
+                            let videoSrc = parts[1];
+                            
+                            block.innerHTML = `
+                                <p style="color:#f0f6fc; font-size:16px; margin-top:0;"><span style="color:#3fb950;">⚡</span> ${textCaption}</p>
+                                <video controls style="width:100%; max-height:400px; border-radius:6px; border:1px solid #ff5555; background:#0d1117; margin-top:10px;">
+                                    <source src="${videoSrc}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            `;
+                        } else if(rawData.includes("|||IMAGE|||") || rawData.includes("|||")) {
+                            // Purana format ya naya image format dono handle karega
+                            let separator = rawData.includes("|||IMAGE|||") ? "|||IMAGE|||" : "|||";
+                            let parts = rawData.split(separator);
                             let textCaption = parts[0];
                             let imageSrc = parts[1];
                             
@@ -52,7 +66,7 @@
                                 <img src="${imageSrc}" style="width:100%; max-height:400px; object-fit:contain; border-radius:6px; border:1px solid #30363d; background:#0d1117; margin-top:10px;">
                             `;
                         } else {
-                            // Agar sirf text hai bina photo ke
+                            // Agar sirf text hai
                             block.innerHTML = `<span style="color:#3fb950; font-weight:bold; margin-right:8px;">⚡</span> ${rawData}`;
                         }
                         
