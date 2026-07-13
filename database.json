@@ -1,3 +1,11 @@
 {
-    "news": []
+    "news": [
+        {
+            "id": "1783961151",
+            "caption": "Hy",
+            "media_type": "text",
+            "file_path": "",
+            "time": "13 Jul 2026, 09:45 PM"
+        }
+    ]
 }
