@@ -9,7 +9,7 @@
 
     <div style="text-align: center; margin-bottom: 40px;">
         <h1 style="color: #3fb950; margin-bottom: 5px;">📡 ZENITH LIVE HOME PORTAL</h1>
-        <p style="color: #8b949e; margin-top: 0;">Multi-Media Cloud Network Active (Text • Photo • Video)</p>
+        <p style="color: #8b949e; margin-top: 0;">Folder Streaming Isolation Active</p>
     </div>
 
     <div style="max-width: 600px; margin: 0 auto;">
@@ -38,22 +38,13 @@
                         block.style.marginBottom = "15px";
                         block.style.borderRadius = "8px";
                         block.style.textAlign = "left";
-                        block.style.position = "relative";
 
-                        let rawData = item.title;
                         let mediaHTML = "";
-                        let textCaption = rawData;
-
-                        // Check media formats
-                        if(rawData.includes("|||VIDEO|||")) {
-                            let parts = rawData.split("|||VIDEO|||");
-                            textCaption = parts[0];
-                            mediaHTML = `<video controls style="width:100%; max-height:400px; border-radius:6px; border:1px solid #30363d; background:#0d1117; margin-top:12px;"><source src="${parts[1]}" type="video/mp4"></video>`;
-                        } else if(rawData.includes("|||IMAGE|||") || rawData.includes("|||")) {
-                            let separator = rawData.includes("|||IMAGE|||") ? "|||IMAGE|||" : "|||";
-                            let parts = rawData.split(separator);
-                            textCaption = parts[0];
-                            mediaHTML = `<img src="${parts[1]}" style="width:100%; max-height:400px; object-fit:contain; border-radius:6px; border:1px solid #30363d; background:#0d1117; margin-top:12px;">`;
+                        // Ab database direct file ka relative path read karega uploads/ folder se
+                        if(item.media_type === "video" && item.file_path) {
+                            mediaHTML = `<video controls style="width:100%; max-height:400px; border-radius:6px; border:1px solid #30363d; background:#0d1117; margin-top:12px;"><source src="${item.file_path}" type="video/mp4"></video>`;
+                        } else if(item.media_type === "image" && item.file_path) {
+                            mediaHTML = `<img src="${item.file_path}" style="width:100%; max-height:400px; object-fit:contain; border-radius:6px; border:1px solid #30363d; background:#0d1117; margin-top:12px;">`;
                         }
 
                         block.innerHTML = `
@@ -61,7 +52,7 @@
                                 <span style="color:#3fb950; font-weight:bold;">⚡ LIVE FEED</span>
                                 <small style="color:#8b949e; font-size:12px;">🕒 ${item.time || 'Just Now'}</small>
                             </div>
-                            <p style="color:#f0f6fc; font-size:15px; margin:5px 0; line-height:1.5;">${textCaption}</p>
+                            <p style="color:#f0f6fc; font-size:15px; margin:5px 0; line-height:1.5;">${item.caption || ''}</p>
                             ${mediaHTML}
                         `;
                         
@@ -79,4 +70,3 @@
         setInterval(fetchLiveFeeds, 15000);
     </script>
 </body>
-</html>
