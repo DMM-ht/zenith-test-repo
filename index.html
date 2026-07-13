@@ -15,7 +15,7 @@
     <div style="max-width: 600px; margin: 0 auto;">
         <h3 style="border-bottom: 1px solid #30363d; padding-bottom: 10px; color: #58a6ff;">📌 RECENT BROADCASTS</h3>
         <div id="news-container">
-            <div style="color: #e3b341; padding: 20px; text-align: center;">Fetching secure cloud feed...</div>
+            <div style="text-align: center; color: #e3b341; padding: 20px;">Fetching secure cloud feed...</div>
         </div>
     </div>
 
@@ -38,37 +38,32 @@
                         block.style.marginBottom = "15px";
                         block.style.borderRadius = "8px";
                         block.style.textAlign = "left";
+                        block.style.position = "relative";
 
                         let rawData = item.title;
-                        
-                        // Check karein kya Video ya Photo ka naya structure hai
+                        let mediaHTML = "";
+                        let textCaption = rawData;
+
+                        // Check media formats
                         if(rawData.includes("|||VIDEO|||")) {
                             let parts = rawData.split("|||VIDEO|||");
-                            let textCaption = parts[0];
-                            let videoSrc = parts[1];
-                            
-                            block.innerHTML = `
-                                <p style="color:#f0f6fc; font-size:16px; margin-top:0;"><span style="color:#3fb950;">⚡</span> ${textCaption}</p>
-                                <video controls style="width:100%; max-height:400px; border-radius:6px; border:1px solid #ff5555; background:#0d1117; margin-top:10px;">
-                                    <source src="${videoSrc}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            `;
+                            textCaption = parts[0];
+                            mediaHTML = `<video controls style="width:100%; max-height:400px; border-radius:6px; border:1px solid #30363d; background:#0d1117; margin-top:12px;"><source src="${parts[1]}" type="video/mp4"></video>`;
                         } else if(rawData.includes("|||IMAGE|||") || rawData.includes("|||")) {
-                            // Purana format ya naya image format dono handle karega
                             let separator = rawData.includes("|||IMAGE|||") ? "|||IMAGE|||" : "|||";
                             let parts = rawData.split(separator);
-                            let textCaption = parts[0];
-                            let imageSrc = parts[1];
-                            
-                            block.innerHTML = `
-                                <p style="color:#f0f6fc; font-size:16px; margin-top:0;"><span style="color:#3fb950;">⚡</span> ${textCaption}</p>
-                                <img src="${imageSrc}" style="width:100%; max-height:400px; object-fit:contain; border-radius:6px; border:1px solid #30363d; background:#0d1117; margin-top:10px;">
-                            `;
-                        } else {
-                            // Agar sirf text hai
-                            block.innerHTML = `<span style="color:#3fb950; font-weight:bold; margin-right:8px;">⚡</span> ${rawData}`;
+                            textCaption = parts[0];
+                            mediaHTML = `<img src="${parts[1]}" style="width:100%; max-height:400px; object-fit:contain; border-radius:6px; border:1px solid #30363d; background:#0d1117; margin-top:12px;">`;
                         }
+
+                        block.innerHTML = `
+                            <div style="display:flex; justify-content:space-between; margin-bottom:8px; border-bottom:1px solid #21262d; padding-bottom:5px;">
+                                <span style="color:#3fb950; font-weight:bold;">⚡ LIVE FEED</span>
+                                <small style="color:#8b949e; font-size:12px;">🕒 ${item.time || 'Just Now'}</small>
+                            </div>
+                            <p style="color:#f0f6fc; font-size:15px; margin:5px 0; line-height:1.5;">${textCaption}</p>
+                            ${mediaHTML}
+                        `;
                         
                         container.appendChild(block);
                     });
